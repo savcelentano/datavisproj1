@@ -5,7 +5,7 @@
   <meta name="description" content="Data task" />
   <meta name="keywords"    content="HTML, CSS, D3" />
   <meta name="author"      content="Saverio Celentano 103076732" />
-  <title>Task 1.6</title>
+  <title>Data Vis Project</title>
   
   <script src="https://d3js.org/d3.v6.min.js"></script>
 </head>
@@ -16,13 +16,15 @@
 	
 	<script>
 
+		var dataset;
 		
+		console.log(d3.csvParse("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/Exercise_1.7_data.csv"));
 		
-		d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/Exercise_1.7_data.csv").then(function(data) {
+		//dataset = csvData;
 		
-			dataset = data;
+
+	
 		
-		});
 		
 	</script>
 </body>
