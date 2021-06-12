@@ -16,9 +16,38 @@
 	
 	<script>
 
-		var dataset;
 		
-		console.log(d3.csvParse("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/Exercise_1.7_data.csv"));
+		var dataArray = [];
+		
+		
+		const csvUrl = 'https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTotals.csv';
+		
+		//var data = d3.csv(csvUrl);
+		//console.log(data);
+		
+		d3.csv(csvUrl).then(function(data) {
+		
+			dataArray = data;
+			console.log(dataArray[3]);
+			
+					var svg = d3.select("body").append("svg")
+				  .attr("height","1000")
+				  .attr("width","100%");
+
+		svg.selectAll("rect")
+			.data(dataArray)
+			.enter().append("rect")
+				.attr("height", "400")
+		        .attr("width","40")
+				.attr("x", function(d, i) {return (i * 60) + 25})
+				.attr("y","50");
+		  });
+		  
+
+	
+		
+
+		
 		
 		//dataset = csvData;
 		
