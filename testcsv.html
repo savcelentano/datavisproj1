@@ -45,9 +45,14 @@ d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTota
   // format the data
   data.forEach(function(d) {
     d.waste_type = d.waste_type
-	d.y2006 = d.y2006
+	d.y2006 = +d.y2006
 	
   });
+  
+  console.log(data);
+  
+  var maximum = d3.max(data, function(d) { return d.y2006; });
+        console.log("max is " + maximum);
 
   // Scale the range of the data in the domains
   x.domain(data.map(function(d) { return d.waste_type; }));
@@ -59,7 +64,7 @@ d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTota
     .enter().append("rect")
       .attr("class", "bar")
       .attr("x", function(d) { return x(d.waste_type); })
-      .attr("width", x.bandwidth())
+      .attr("width", x.bandwidth())	
       .attr("y", function(d) { return y(d.y2006); })
       .attr("height", function(d) { return height - y(d.y2006); });
 
