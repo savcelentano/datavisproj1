@@ -12,70 +12,103 @@
 
 <body>
 
-	<h1> Task 1.7 </h1>
+	<h1> Data Visualisation Project </h1>
+	<p> </p>
 	
 	<script>
 
-		
-// set the dimensions and margins of the graph
-var margin = {top: 20, right: 20, bottom: 30, left: 60},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
 
-// set the ranges
-var x = d3.scaleBand()
-          .range([0, width])
-          .padding(0.1);
-var y = d3.scaleLinear()
-          .range([height, 0]);
-          
-// append the svg object to the body of the page
-// append a 'group' element to 'svg'
-// moves the 'group' element to the top left margin
-var svg = d3.select("body").append("svg")
+		
+// dimensions of svg
+const margin = {top: 20, right: 50, bottom: 40, left: 150},
+    width = 1000 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// place svg inside the body of html
+const svg = d3.select("body")
+  .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
-    .attr("transform", 
-          "translate(" + margin.left + "," + margin.top + ")");
-
-// get the data
-d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTotals.csv").then(function(data) {
-
-  // format the data
-  data.forEach(function(d) {
-    d.waste_type = d.waste_type
-	d.y2006 = +d.y2006
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
 	
-  });
-  
-  console.log(data);
-  
-  var maximum = d3.max(data, function(d) { return d.y2006; });
-        console.log("max is " + maximum);
+var dataset;
 
-  // Scale the range of the data in the domains
-  x.domain(data.map(function(d) { return d.waste_type; }));
-  y.domain([0, d3.max(data, function(d) { return d.y2006; })]);
+  var clip = svg.append("g").append("svg:clipPath")
+      .attr("id", "clip")
+      .append("svg:rect")
+      .attr("width", width )
+      .attr("height", height )
+      .attr("x", 0)
+      .attr("y", 0);
+	  
 
-  // append the rectangles for the bar chart
-  svg.selectAll(".bar")
-      .data(data)
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.waste_type); })
-      .attr("width", x.bandwidth())	
-      .attr("y", function(d) { return y(d.y2006); })
-      .attr("height", function(d) { return height - y(d.y2006); });
+// Parse the Data
+d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTotals.csv").then( function(data) {
 
-  // add the x Axis
+	dataset = data;
+
+	data.forEach(function(d) {
+	d.waste_type = d.waste_type
+	d.y2006 = +d.y2006
+
+	});
+	
+	console.log(dataset);
+
+
+
+	var max = d3.max(data, function(d) { return d.y2006; });
+	//console.log(max);
+	//console.log(data);
+
+  // Add X axis
+  const x = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d) { return d.y2006; })])
+    .range([ 0, width]);
   svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+    .attr("transform", `translate(0, ${height})`)
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end");
 
-  // add the y Axis
+  // Y axis
+  var y = d3.scaleBand()
+    .range([ 0, height ])
+    .domain(data.map(d => d.waste_type))
+    .padding(.1);
   svg.append("g")
-      .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y))
+
+  //Bars
+  svg.selectAll("myRect")
+    .data(data)
+    .join("rect")
+	.transition()
+	.duration(3000)
+    .attr("x", x(0) )
+    .attr("y", d => y(d.waste_type))
+    .attr("width", d => x(d.y2006))
+    .attr("height", y.bandwidth())
+    .attr("fill", function(d){ if(d.y2006 < 10000) // colour will change depending on severity of waste
+	{return "green"}
+	
+	else if (d.y2006 < 50000)
+	{return "green"} 
+	
+	else if (d.y2006 < 200000) {
+	return "orange"
+	}
+	
+	else {
+	return "red"
+	}
+	
+	}
+	)
+	
+
 
 });
 		
