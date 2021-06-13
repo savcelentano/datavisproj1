@@ -8,7 +8,7 @@
   <title>Data Vis Project</title>
   
   <style>
-  
+ 
     .tooltip{
       position      : absolute;
       text-align    : center;
@@ -26,7 +26,7 @@
   
   </style>
   
-  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://d3js.org/d3.v6.min.js"></script> 
 </head>
 
 <body>
@@ -51,15 +51,15 @@ const svg = d3.select("body")
   .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 	
-var dataset;
+var dataset; // data set global variable incase needed
 
 
-// Parse the Data
+// data import (csv by me and tom)
 d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTotals.csv").then( function(data) {
 
 	dataset = data;
 
-	data.forEach(function(d) {
+	data.forEach(function(d) { // set up the fields to be strings / integer 
 	d.waste_type = d.waste_type
 	d.y2006 = +d.y2006
 
@@ -68,14 +68,14 @@ d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTota
 	console.log(dataset);
 	
 	
-	// tooltips
+	// mouse interaction tool tips with graph
     var div = d3.select('body').append('myRect')
 	    .attr('class', 'tooltip')
         .style('display', 'none');
     function mouseover(){
         div.style('display', 'inline');
 		d3.select(this)
-        .attr("style", "outline: thin solid black;")
+        .attr("style", "outline: thin solid black;") // outlines selected item as well as changes opacity
 		.attr("opacity","0.5")
     }
     function mousemove(){
@@ -87,47 +87,47 @@ d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTota
         div.style('display', 'none')
 		d3.select(this)
 		.attr("style", "none")
-		.attr("opacity","1")
+		.attr("opacity","1") // reverts to normal 
     }
 
 
 
-
-	var max = d3.max(data, function(d) { return d.y2006; });
+	// tests 
+	//var max = d3.max(data, function(d) { return d.y2006; }); 
 	//console.log(max);
 	//console.log(data);
 
-  // Add X axis
+  //  X axis defined
   const x = d3.scaleLinear()
-    .domain([0, d3.max(data, function(d) { return d.y2006; })])
+    .domain([0, d3.max(data, function(d) { return d.y2006; })]) // uses largest value for scale (dynamic)
     .range([ 0, width]);
   svg.append("g")
     .attr("transform", `translate(0, ${height})`)
     .call(d3.axisBottom(x))
     .selectAll("text")
       .attr("transform", "translate(-10,0)rotate(-45)")
-      .style("text-anchor", "end");
+      .style("text-anchor", "end"); // horizontal graph rather normal vertical 
 	  
 
-  // Y axis
+  // Y axis defined
   var y = d3.scaleBand()
     .range([ 0, height ])
-    .domain(data.map(d => d.waste_type))
+    .domain(data.map(d => d.waste_type)) // each y axis item is a value from the data
     .padding(.1);
   svg.append("g")
     .call(d3.axisLeft(y))
 
-  //Bars
+  //Bars for the graph
   svg.selectAll("myRect")
     .data(data)
     .join("rect")
 	.on('mouseover', mouseover)
-    .on('mousemove', mousemove)
+    .on('mousemove', mousemove) // calls mouse interactions
     .on('mouseout', mouseout)
-	.transition()
+	.transition() 
 	.duration(3000)
     .attr("x", x(0) )
-    .attr("y", d => y(d.waste_type))
+    .attr("y", d => y(d.waste_type)) 
     .attr("width", d => x(d.y2006))
     .attr("height", y.bandwidth())
     .attr("fill", function(d){ if(d.y2006 < 10000) // colour will change depending on severity of waste
@@ -140,7 +140,7 @@ d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTota
 	return "orange"
 	}
 	
-	else {
+	else { // anything not changed previously, will be red (extreme waste)
 	return "red"
 	}
 	
@@ -149,10 +149,6 @@ d3.csv("https://raw.githubusercontent.com/savcelentano/datavisproj1/main/VicTota
 	
 
 });
-		
 
-	
-		
-		
 	</script>
 </body>
